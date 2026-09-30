@@ -1,0 +1,60 @@
+/* The control sits in the detail head's action row, beside the page's own
+   switch and uninstall control, so it stays one line tall. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--dsw-font-xs-13);
+  color: var(--dsw-alias-label-secondary);
+}
+
+.primary {
+  padding: 4px 12px;
+  border: none;
+  border-radius: var(--dsw-radius-sm);
+  background: var(--dsw-alias-button-primary-fill);
+  color: var(--dsw-alias-label-primary-foreground);
+  font: var(--dsw-font-xs-13);
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: var(--dsw-alias-button-primary-hover);
+}
+
+.primary:disabled {
+  background: var(--dsw-alias-button-primary-dimmed);
+  cursor: default;
+}
+
+.link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--dsw-alias-link);
+  font: inherit;
+  cursor: pointer;
+}
+
+.done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--dsw-font-xs-13);
+  color: var(--dsw-alias-state-success-primary);
+}
+
+.failure {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 420px;
+  font: var(--dsw-font-xs-13);
+  color: var(--dsw-alias-state-error-primary);
+}
+
+.errorText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

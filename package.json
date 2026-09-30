@@ -1,0 +1,98 @@
+{
+  "name": "@elves-ai/dsh-plugin-updater",
+  "version": "0.1.0",
+  "description": "Plugin update control for the DeepSeek Harness plugins page: checks and applies updates from the plugin detail page through the plugin market's versioned update API, with progress, failure reasons, and rollback-aware restart guidance.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "plugin-manager",
+    "update",
+    "updater",
+    "market",
+    "cordis"
+  ],
+  "homepage": "https://github.com/elves-ai/dsh-plugin-updater#readme",
+  "bugs": {
+    "url": "https://github.com/elves-ai/dsh-plugin-updater/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elves-ai/dsh-plugin-updater.git"
+  },
+  "license": "MIT",
+  "author": "yangzhe1003",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "types": "./lib/types/client/index.d.ts",
+      "default": "./lib/client.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.1.7-rc.2": "compatible",
+        "0.2.0-rc.2": "compatible"
+      },
+      "dsh": "^0.1.7-rc.2 || ^0.2.0-rc.2"
+    },
+    "client": {
+      "platform": "web"
+    }
+  },
+  "files": [
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "AGENTS.md",
+    "LICENSE"
+  ],
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "rm -rf lib && npm run build:types && tsdown",
+    "build:types": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "bundle": "tsdown",
+    "watch": "tsdown --watch",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "~18.3.1",
+    "@types/react-dom": "~18.3.0",
+    "lightningcss": "^1.32.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tsdown": "^0.22.2",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=22",
+    "dsh": "^0.1.7-rc.2 || ^0.2.0-rc.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
