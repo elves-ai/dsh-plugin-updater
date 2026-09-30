@@ -22,11 +22,30 @@ Everything runs through the plugin market's public update API (`dsh-market/updat
 
 ## Install
 
-```sh
-dsh plugin --profile desktop add github:elves-ai/dsh-plugin-updater
+**In the desktop app** — open **Plugins** → **Add plugin** and enter:
+
+```
+github:elves-ai/dsh-plugin-updater
 ```
 
-Use `--profile web` when you run `dsh web` instead of the desktop app. Restart DSH afterwards and hard-refresh the page (Cmd/Ctrl+Shift+R) so the browser half loads.
+The app's `desktop` profile is managed exclusively by the application, so `dsh plugin --profile desktop add …` refuses to touch it; the page's own install action is the way in.
+
+**In `dsh web` or any other profile:**
+
+```sh
+dsh plugin --profile web add github:elves-ai/dsh-plugin-updater
+```
+
+Restart DSH afterwards and hard-refresh the page (Cmd/Ctrl+Shift+R) so the browser half loads.
+
+## Verify it works
+
+1. **The market answers.** `curl -s localhost:<port>/dsh-market/api/v1/capabilities` reports `features.update: true`. Without the market plugin there is no update surface, and the control stays hidden.
+2. **The control appears.** Plugins → open any installed bundle → the head row carries a check result or an **Update to …** button.
+3. **A live check passes.**
+   ```sh
+   DSH_MARKET_BASE=http://127.0.0.1:<port>/dsh-market/api/v1 pnpm run test:e2e
+   ```
 
 **The repository ships its built bundles, so installation copies files and runs nothing.** `lib/` is committed on purpose: pnpm 11 refuses to run a git dependency's build scripts unless every consumer allowlists the exact tarball URL (the key embeds the commit), so a `prepare` script fails the install outright instead of degrading. [AGENTS.md](AGENTS.md) carries the rule that keeps it current.
 
@@ -60,6 +79,7 @@ Requests are same-origin: the browser half fetches the host that served it, whic
 pnpm install
 pnpm run typecheck   # tsc --noEmit over src, tests, and the build config
 pnpm test            # unit suite, no network, no dsh profile
+DSH_MARKET_BASE=http://127.0.0.1:<port>/dsh-market/api/v1 pnpm run test:e2e   # live check, self-skips without the variable
 pnpm run build       # tsc declarations into lib/types, then tsdown bundles
 ```
 

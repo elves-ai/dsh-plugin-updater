@@ -22,11 +22,30 @@
 
 ## 安装
 
-```sh
-dsh plugin --profile desktop add github:elves-ai/dsh-plugin-updater
+**桌面 App** —— 打开 **插件 / Plugins** → **添加插件**，填入：
+
+```
+github:elves-ai/dsh-plugin-updater
 ```
 
-跑 `dsh web` 而不是桌面 App 时，把 profile 换成 `web`。装完重启 DSH 并硬刷新页面（Cmd/Ctrl+Shift+R），浏览器端才会加载。
+App 的 `desktop` profile 由应用独占管理，`dsh plugin --profile desktop add …` 会被拒绝，页面上的安装入口才是正确路径。
+
+**`dsh web` 或其它 profile：**
+
+```sh
+dsh plugin --profile web add github:elves-ai/dsh-plugin-updater
+```
+
+装完重启 DSH 并硬刷新页面（Cmd/Ctrl+Shift+R），浏览器端才会加载。
+
+## 验证是否可用
+
+1. **市场有响应。** `curl -s localhost:<端口>/dsh-market/api/v1/capabilities` 返回 `features.update: true`。没装市场插件就没有更新能力，控件会一直隐藏。
+2. **控件出现了。** 插件页 → 打开任意已安装插件的详情 → 标题行会显示检查结果或「更新到 …」按钮。
+3. **实机检查通过。**
+   ```sh
+   DSH_MARKET_BASE=http://127.0.0.1:<端口>/dsh-market/api/v1 pnpm run test:e2e
+   ```
 
 **仓库直接提供构建产物，安装只复制文件、不跑任何脚本。** `lib/` 是刻意提交的：pnpm 11 默认拒绝执行 git 依赖的构建脚本，除非每个使用方都精确放行到 tarball URL（其 key 里嵌了 commit），所以 `prepare` 不是降级而是直接让安装失败。[AGENTS.md](AGENTS.md) 记录了维持它最新的规则。
 
@@ -60,6 +79,7 @@ dsh plugin --profile desktop add github:elves-ai/dsh-plugin-updater
 pnpm install
 pnpm run typecheck   # tsc --noEmit，覆盖 src、tests 与构建配置
 pnpm test            # 单测：不联网、不需要 dsh profile
+DSH_MARKET_BASE=http://127.0.0.1:<端口>/dsh-market/api/v1 pnpm run test:e2e   # 实机检查，没有该变量时自动跳过
 pnpm run build       # tsc 产出 lib/types，再由 tsdown 打包
 ```
 

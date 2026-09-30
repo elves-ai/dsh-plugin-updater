@@ -22,6 +22,7 @@ One fact, one home: the API's request and response reading lives only in `market
 pnpm install
 pnpm run typecheck   # tsc --noEmit over src, tests, and the build config
 pnpm test            # unit suite, no network
+DSH_MARKET_BASE=http://127.0.0.1:<port>/dsh-market/api/v1 pnpm run test:e2e   # live check, self-skips without the variable
 pnpm run build       # tsc declarations to lib/types, then tsdown bundles
 ```
 
@@ -29,7 +30,7 @@ There is no lint or coverage gate here. `pnpm run typecheck && pnpm test && pnpm
 
 ### Distribution: `lib/` is committed on purpose
 
-The plugin is installed from its repository (`dsh plugin --profile desktop add github:elves-ai/dsh-plugin-updater`), and a git install runs no build. pnpm 11 refuses a git dependency's build scripts unless every consumer allowlists the exact tarball URL — the allowlist key embeds the commit — so `prepare` does not degrade, it fails the install outright. The repository therefore ships the bundles.
+The plugin is installed from its repository (the app's Plugins page → Add plugin with `github:elves-ai/dsh-plugin-updater`, or `dsh plugin --profile web add …` elsewhere; `dsh plugin` refuses the app-owned `desktop` profile), and a git install runs no build. pnpm 11 refuses a git dependency's build scripts unless every consumer allowlists the exact tarball URL — the allowlist key embeds the commit — so `prepare` does not degrade, it fails the install outright. The repository therefore ships the bundles.
 
 - **Rebuild and commit `lib/` in the same change as any `src/` edit.** Users run the bundle, not the source.
 - **Never add `prepare` back.** `prepack` covers the publish path instead.
@@ -79,6 +80,7 @@ Checked against a running desktop host on **2026-09-30** (dshmarket 1.66.6, prof
 | `src/client/index.tsx`, `tsdown.config.ts` | `pnpm run build` — the purity gate and the module-loader factory are only exercised there |
 | Anything under `src/` | `pnpm run build`, then commit the refreshed `lib/` with the source change |
 | Anything user-visible | Update `README.md` and `README.zh.md` in the same change |
+| Any change to how the API is read | `DSH_MARKET_BASE=http://127.0.0.1:<port>/dsh-market/api/v1 pnpm run test:e2e` against a running host, which is the only check that sees the real documents |
 
 ## Gotchas
 
